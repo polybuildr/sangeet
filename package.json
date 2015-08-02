@@ -1,0 +1,25 @@
+{
+  "name": "sangeet",
+  "version": "0.0.1",
+  "description": "Command line tool to play notes using the musicbits library.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polybuildr/sangeet.git"
+  },
+  "keywords": [
+    "music"
+  ],
+  "author": "Vivek Ghaisas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/polybuildr/sangeet/issues"
+  },
+  "homepage": "https://github.com/polybuildr/sangeet#readme",
+  "dependencies": {
+    "baudio": "^2.1.2",
+    "commander": "^2.8.1",
+    "musicbits": "0.0.1"
+  },
+  "bin": "./index.js"
+}
