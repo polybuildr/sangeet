@@ -10,6 +10,7 @@ var file = ''
 program
     .version('0.0.1')
     .option('-i --instrument <instrument>', 'The instrument to use (piano or flute)', /^(piano|flute)$/i, 'piano')
+    .option('-d --duration <duration>', 'The duration of a full length note (in seconds)', parseFloat, 0.3)
     .arguments('<file>')
     .action(function(f) {
         file = f
@@ -21,9 +22,20 @@ if ( !file ) {
     program.help()
 }
 
-var text = fs.readFileSync(file).toString()
+if (isNaN(program.duration)) {
+    console.error('Duration must be a valid decimal number.')
+    program.help()
+}
+try {
+    var text = fs.readFileSync(file).toString()
+}
+catch (e) {
+    console.error('error:', e.message)
+    process.exit(1)
+}
 var melody = parseText(text)
-var instrument = new Instrument(melody, program.instrument)
+
+var instrument = new Instrument(melody, program.instrument, program.duration)
 
 var endIndex = 0
 var startIndex = 0
