@@ -44,3 +44,5 @@ This will mean:
 - play note 43 for half note duration
 - play note 44 for half note duration
 - play note 45 for one note duration
+
+The note numbers correspond to piano key frequencies, where key 40 is the middle C. [Wikipedia: Piano key frequencies](https://en.wikipedia.org/wiki/Piano_key_frequencies)
