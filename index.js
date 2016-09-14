@@ -3,7 +3,11 @@
 var fs = require('fs')
     , program = require('commander')
     , baudio = require('baudio')
-    , Instrument = require('musicbits').Instrument
+    , musicbits = require('musicbits');
+
+var Instrument = musicbits.Instrument;
+var Piano = musicbits.Piano;
+var Flute = musicbits.Flute;
 
 var file = ''
 
@@ -35,7 +39,13 @@ catch (e) {
 }
 var melody = parseText(text)
 
-var instrument = new Instrument(melody, program.instrument, program.duration)
+if (program.instrument === 'flute') {
+    var instrument = new Flute(program.duration);
+} else {
+    var instrument = new Piano(program.duration);
+}
+
+instrument.play(melody);
 
 var endIndex = 0
 var startIndex = 0
