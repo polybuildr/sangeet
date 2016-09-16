@@ -3,11 +3,10 @@
 var fs = require('fs')
     , program = require('commander')
     , baudio = require('baudio')
-    , musicbits = require('musicbits');
-
-var Instrument = musicbits.Instrument;
-var Piano = musicbits.Piano;
-var Flute = musicbits.Flute;
+    , musicbits = require('musicbits')
+    , Instrument = musicbits.Instrument
+    , Piano = musicbits.Piano
+    , Flute = musicbits.Flute
 
 var file = ''
 
@@ -15,6 +14,7 @@ program
     .version('0.0.1')
     .option('-i --instrument <instrument>', 'The instrument to use (piano or flute)', /^(piano|flute)$/i, 'piano')
     .option('-d --duration <duration>', 'The duration of a full length note (in seconds)', parseFloat, 0.3)
+    .option('-o --outfile <outfile>', 'out file')
     .arguments('<file>')
     .action(function(f) {
         file = f
@@ -22,7 +22,7 @@ program
     .parse(process.argv)
 
 
-if ( !file ) {
+if (!file) {
     program.help()
 }
 
@@ -34,18 +34,29 @@ try {
     var text = fs.readFileSync(file).toString()
 }
 catch (e) {
-    console.error('error:', e.message)
+    if (e.code === 'ENOENT') {
+        console.error("Error: File '" + file + "' not found.")
+    } else {
+        console.error('error:', e.message)
+    }
     process.exit(1)
 }
+
 var melody = parseText(text)
 
-if (program.instrument === 'flute') {
-    var instrument = new Flute(program.duration);
-} else {
-    var instrument = new Piano(program.duration);
+switch (program.instrument) {
+    case 'flute':
+        var instrument = new Flute(program.duration)
+        break
+    case 'piano':
+        var instrument = new Piano(program.duration)
+        break
+    default:
+        var instrument = new Piano(program.duration)
+        break
 }
 
-instrument.play(melody);
+instrument.play(melody)
 
 var endIndex = 0
 var startIndex = 0
@@ -66,14 +77,16 @@ var b = baudio(function(t) {
         }
         return 0
     }
-    return instrument.value(t);
+    return instrument.value(t)
 })
 
-if (process.stdout.isTTY) {
+if (false && process.stdout.isTTY) {
     b.play()
 }
 else {
-    b.pipe(process.stdout)
+    b.record(program.outfile).on('exit', function (e) {
+        console.error('exit: ', e)
+    })
 }
 
 function parseText(text) {
@@ -81,7 +94,7 @@ function parseText(text) {
     var melody = []
     for (var i = 0; i < inputLines.length; ++i) {
         var line = inputLines[i]
-        if ( !line ) {
+        if (!line.trim()) {
             continue
         }
         var input = line.split(/\s+/)
@@ -92,7 +105,7 @@ function parseText(text) {
             melody.push([parseVal(input[0]), parseDuration(input[1])])
         }
         else {
-            return new Error('Line has more than two values.')
+            throw new Error('Line ' + i + ' has more than two values.')
         }
     }
     return melody
