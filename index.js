@@ -11,10 +11,10 @@ var fs = require('fs')
 var file = ''
 
 program
-    .version('0.0.1')
-    .option('-i --instrument <instrument>', 'The instrument to use (piano or flute)', /^(piano|flute)$/i, 'piano')
-    .option('-d --duration <duration>', 'The duration of a full length note (in seconds)', parseFloat, 0.3)
-    .option('-o --outfile <outfile>', 'out file')
+    .version('0.2.0')
+    .option('-i --instrument <instrument>', 'instrument to use (piano or flute)', /^(piano|flute)$/i, 'piano')
+    .option('-d --duration <duration>', 'duration of a full length note (in seconds)', parseFloat, 0.3)
+    .option('-o --outfile <outfile>', 'save output to outfile, don\'t play it directly')
     .arguments('<file>')
     .action(function(f) {
         file = f
@@ -80,14 +80,29 @@ var b = baudio(function(t) {
     return instrument.value(t)
 })
 
-if (false && process.stdout.isTTY) {
-    b.play()
+var sox = null
+
+if (program.outfile) {
+    sox = b.record(program.outfile)
 }
 else {
-    b.record(program.outfile).on('exit', function (e) {
-        console.error('exit: ', e)
-    })
+    sox = b.play()
 }
+
+sox.stderr.on('data', function (data) {
+    console.error(data.toString())
+})
+
+sox.on('exit', function (code) {
+    if (code !== 0) {
+        console.log('Error: sox did not exit normally!')
+        process.exit(code)
+    }
+})
+
+b.on('error', function (error) {
+    console.error(error.message)
+})
 
 function parseText(text) {
     var inputLines = text.split('\n')
