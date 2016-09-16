@@ -23,8 +23,9 @@ Options:
 
   -h, --help                    output usage information
   -V, --version                 output the version number
-  -i --instrument <instrument>  The instrument to use (piano or flute)
-  -d --duration <duration>      The duration of a full length note (in seconds)
+  -i --instrument <instrument>  instrument to use (piano or flute)
+  -d --duration <duration>      duration of a full length note (in seconds)
+  -o --outfile <outfile>        save output to outfile, don't play it directly
 ```
 
 ## Data file
