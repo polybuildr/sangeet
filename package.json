@@ -1,6 +1,6 @@
 {
   "name": "sangeet",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Command line tool to play notes using the musicbits library.",
   "main": "index.js",
   "repository": {
@@ -19,7 +19,7 @@
   "dependencies": {
     "baudio": "^2.1.2",
     "commander": "^2.8.1",
-    "musicbits": "0.0.1"
+    "musicbits": "0.2.0"
   },
   "bin": "./index.js"
 }
